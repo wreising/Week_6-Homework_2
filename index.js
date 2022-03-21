@@ -1,11 +1,22 @@
 const express = require('express')
 const { prompt } = require('inquirer')
+const mysql = require('mysql2')
 
 const app = express()
 
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "kissinger",
+  database: "employees_db"
+})
+
+const db = mysql.createConnection('mysql://root:kissinger@localhost:3306/employees_db')
+
 function start() {
   console.log(`
-    ________________________________________
+
+     ______________________________________
     |                                      |
     |     Welcome to: Employee Tracker     |
     |______________________________________| 
@@ -15,7 +26,12 @@ function start() {
 }
 
 function appPrompts() {
-  console.log("")
+  console.log(`
+     ______________________________________
+    |                                      |
+    |              Main Menu               |
+    |______________________________________| 
+  `)
   prompt([
     {
       type: "list",
@@ -68,7 +84,13 @@ function appPrompts() {
 
 // Employee Sub-Category <------------->
 function catEmployeeSub() {
-  console.log("")
+  console.log(`
+     ______________________________________
+    |                                      |
+    |          Employee Sub-Menu           |
+    |______________________________________| 
+    
+    `)
   prompt([
     {
       type: "list",
@@ -158,7 +180,13 @@ function updateEmployeeManager() {
 
 // Role Sub-Category <------------->
 function catRolesSub() {
-  console.log("")
+  console.log(`
+     ______________________________________
+    |                                      |
+    |        Employee Role Sub-Menu        |
+    |______________________________________| 
+    
+    `)
   prompt([
     {
       type: "list",
@@ -209,7 +237,13 @@ function removeEmployeeRole() {
 
 // Department Sub-Category <------------->
 function catDeptartmentSub() {
-  console.log("")
+  console.log(`
+     ______________________________________
+    |                                      |
+    |         Departments Sub-Menu         |
+    |______________________________________| 
+    
+    `)
   prompt([
     {
       type: "list",
@@ -273,7 +307,13 @@ function viewDepartmentBudgets() {
 
 // Manager Sub-Category <------------->
 function catManagerSub() {
-  console.log("")
+  console.log(`
+     ______________________________________
+    |                                      |
+    |          Managers Sub-Menu           |
+    |______________________________________| 
+    
+  `)
   prompt([
     {
       type: "list",
