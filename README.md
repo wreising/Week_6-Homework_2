@@ -10,6 +10,10 @@ A command line utility to track employees by role, department, and manager. The 
 
 ---
 
+[**Screencast**](https://drive.google.com/file/d/1FLaOREmSs34-BBm1Y_CJ8TYrvE7LXM-Q/view)
+
+---
+
 ![screenshot](./Assets/screen-shot_2022-03-23.png)
 
 ---
