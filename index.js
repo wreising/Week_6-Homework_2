@@ -1,17 +1,18 @@
 const express = require('express')
 const { prompt } = require('inquirer')
 const mysql = require('mysql2')
+require("console.table")
 
 const app = express()
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "kissinger",
-  database: "employees_db"
-})
+// const connection = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "kissinger",
+//   database: "employees_db"
+// })
 
-const db = mysql.createConnection('mysql://root:kissinger@localhost:3306/employees_db')
+const db = mysql.createConnection('mysql://root:rootroot@localhost:3306/employees_db')
 
 function start() {
   console.log(`
@@ -27,10 +28,12 @@ function start() {
 
 function appPrompts() {
   console.log(`
+
      ______________________________________
     |                                      |
     |              Main Menu               |
     |______________________________________| 
+
   `)
   prompt([
     {
@@ -85,6 +88,7 @@ function appPrompts() {
 // Employee Sub-Category <------------->
 function catEmployeeSub() {
   console.log(`
+
      ______________________________________
     |                                      |
     |          Employee Sub-Menu           |
@@ -118,7 +122,7 @@ function catEmployeeSub() {
           value: "updateEmployeeManager"
         },
         {
-          name: "<-Go Back",
+          name: "<-Go Back<-",
           value: "goBack"
         }
       ]
@@ -150,8 +154,38 @@ function catEmployeeSub() {
 
 // Add employee
 function addEmployee() {
-  console.log("-Adding Employee")
-  catEmployeeSub()
+  console.log(`
+  Add Employee:
+  `)
+  prompt([
+    {
+      type: 'input',
+      name: 'first_name',
+      message: 'What is the first name of the new employee?'
+    },
+    {
+      type: 'input',
+      name: 'last_name',
+      message: 'What is the last name of the new employee?'
+    },
+    {
+      type: 'input',
+      name: 'role_id',
+      message: 'What role ID would you like to use?'
+    },
+    {
+      type: 'input',
+      name: 'manager_id',
+      message: 'What manager ID would you like to use?'
+    }
+  ])
+    .then(employee => {
+      db.query('INSERT INTO employees SET ?', employee, err => {
+        if (err) { console.log(err) }
+        console.log("Role added.")
+        catEmployeeSub()
+      })
+    })
 }
 
 // Remove employee
@@ -178,9 +212,13 @@ function updateEmployeeManager() {
   catEmployeeSub()
 }
 
+
+
+
 // Role Sub-Category <------------->
 function catRolesSub() {
   console.log(`
+
      ______________________________________
     |                                      |
     |        Employee Role Sub-Menu        |
@@ -202,7 +240,7 @@ function catRolesSub() {
           value: "removeEmployeeRole"
         },
         {
-          name: "<-Go Back",
+          name: "<-Go Back<-",
           value: "goBack"
         }
       ]
@@ -225,8 +263,33 @@ function catRolesSub() {
 
 // Add an employee role
 function addEmployeeRole() {
-  console.log("-Adding Role")
-  catRolesSub()
+  console.log(`
+  Add Role:
+  `)
+  prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: 'What role would you like to add?'
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: 'What would you like the salary to be?'
+    },
+    {
+      type: 'input',
+      name: 'department_id',
+      message: 'What department ID would you like to use?'
+    }
+  ])
+    .then(role => {
+      db.query('INSERT INTO roles SET ?', role, err => {
+        if (err) { console.log(err) }
+        console.log("Role added.")
+        catRoleSub()
+      })
+    })
 }
 
 // Remove an employee role
@@ -235,9 +298,13 @@ function removeEmployeeRole() {
   catRolesSub()
 }
 
+
+
+
 // Department Sub-Category <------------->
 function catDeptartmentSub() {
   console.log(`
+
      ______________________________________
     |                                      |
     |         Departments Sub-Menu         |
@@ -263,7 +330,7 @@ function catDeptartmentSub() {
           value: "viewDepartmentBudgets"
         },
         {
-          name: "<-Go Back",
+          name: "<-Go Back<-",
           value: "goBack"
         }
       ]
@@ -289,25 +356,48 @@ function catDeptartmentSub() {
 
 // Add department
 function addDepartment() {
-  console.log("-Adding Department")
-  catDeptartmentSub()
+  console.log(`
+  Add Department:
+  `)
+  prompt([
+    {
+      type: 'input',
+      name: 'name',
+      message: 'What department would you like to add?'
+    }
+  ])
+    .then(department => {
+      db.query('INSERT INTO departments SET ?', department, err => {
+        if (err) { console.log(err) }
+        console.log("Department added.")
+        catDeptartmentSub()
+      })
+    })
 }
 
 // Remove Department
 function removeDepartment() {
-  console.log("-Removing Department")
+  console.log(`
+  Remove Department:
+  `)
   catDeptartmentSub()
 }
 
 // View Department Budgets
 function viewDepartmentBudgets() {
-  console.log("-List of Departments and Budgets")
+  console.log(`
+  Departments and Budgets:
+  `)
   catDeptartmentSub()
 }
+
+
+
 
 // Manager Sub-Category <------------->
 function catManagerSub() {
   console.log(`
+
      ______________________________________
     |                                      |
     |          Managers Sub-Menu           |
@@ -337,7 +427,7 @@ function catManagerSub() {
           value: "viewByManager"
         },
         {
-          name: "<-Go Back",
+          name: "<-Go Back<-",
           value: "goBack"
         }
       ]
