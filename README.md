@@ -39,7 +39,7 @@ Download the app folder and install all module dependencies with npm i.
 
 ## Instructions:
 
-Run the command `node.js` and make selections and entires.
+Run the command `node index.js` and make selections and entires.
 
 ## Contribution Guidlines
 
