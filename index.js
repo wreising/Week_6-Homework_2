@@ -125,6 +125,7 @@ function catEmployeeSub() {
       switch (choice) {
         case "viewByEmployee1":
           viewByEmployee1()
+          break
         case "addEmployee":
           addEmployee()
           break
@@ -347,7 +348,7 @@ function addEmployeeRole() {
       db.query('INSERT INTO roles SET ?', role, err => {
         if (err) { console.log(err) }
         console.log("Role added.")
-        catRoleSub()
+        catRolesSub()
       })
     })
 }
@@ -451,7 +452,7 @@ function addDepartment() {
       db.query('INSERT INTO departments SET ?', department, err => {
         if (err) { console.log(err) }
         console.log("Department added.")
-        catDeptartmentSub()
+        catDepartmentSub()
       })
     })
 }
