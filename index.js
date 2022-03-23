@@ -1,22 +1,14 @@
 const express = require('express')
 const { prompt } = require('inquirer')
 const mysql = require('mysql2')
-require("console.table")
+const { printTable } = require('console-table-printer')
 
 const app = express()
-
-// const connection = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "kissinger",
-//   database: "employees_db"
-// })
 
 const db = mysql.createConnection('mysql://root:rootroot@localhost:3306/employees_db')
 
 function start() {
   console.log(`
-
      ______________________________________
     |                                      |
     |     Welcome to: Employee Tracker     |
@@ -28,7 +20,6 @@ function start() {
 
 function appPrompts() {
   console.log(`
-
      ______________________________________
     |                                      |
     |              Main Menu               |
@@ -74,7 +65,7 @@ function appPrompts() {
           catRolesSub()
           break
         case "categoryDepartment":
-          catDeptartmentSub()
+          catDepartmentSub()
           break
         case "categoryManager":
           catManagerSub()
@@ -85,10 +76,11 @@ function appPrompts() {
     })
 }
 
+// <----------------------------------------->
+
 // Employee Sub-Category <------------->
 function catEmployeeSub() {
   console.log(`
-
      ______________________________________
     |                                      |
     |          Employee Sub-Menu           |
@@ -102,20 +94,20 @@ function catEmployeeSub() {
       message: "What would you like to do?",
       choices: [
         {
+          name: "View all Employees",
+          value: "viewByEmployee1"
+        },
+        {
           name: "Add Employee",
           value: "addEmployee"
         },
-        {
-          name: "Remove Employee",
-          value: "removeEmployee"
-        },
+        // {
+        //   name: "Remove Employee",
+        //   value: "removeEmployee"
+        // },
         {
           name: "Update Employee Role",
           value: "updateEmployeeRole"
-        },
-        {
-          name: "Update Employee Department",
-          value: "updateEmployeeDepartment"
         },
         {
           name: "Update Employee Manager",
@@ -131,6 +123,8 @@ function catEmployeeSub() {
     .then(res => {
       let choice = res.choice
       switch (choice) {
+        case "viewByEmployee1":
+          viewByEmployee1()
         case "addEmployee":
           addEmployee()
           break
@@ -140,9 +134,6 @@ function catEmployeeSub() {
         case "updateEmployeeRole":
           updateEmployeeRole()
           break
-        case "updateEmployeeDepartment":
-          updateEmployeeDepartment()
-          break
         case "updateEmployeeManager":
           updateEmployeeManager()
           break
@@ -150,6 +141,20 @@ function catEmployeeSub() {
           appPrompts()
       }
     })
+}
+
+// List of employees
+function viewByEmployee1() {
+  console.log(`
+  List of Employees:
+  `)
+  db.query('SELECT * FROM employees', (err, employees) => {
+    if (err) {
+      console.log(err)
+    }
+    console.table(employees)
+    catEmployeeSub()
+  })
 }
 
 // Add employee
@@ -161,64 +166,98 @@ function addEmployee() {
     {
       type: 'input',
       name: 'first_name',
-      message: 'What is the first name of the new employee?'
+      message: "New Employee's First Name?"
     },
     {
       type: 'input',
       name: 'last_name',
-      message: 'What is the last name of the new employee?'
+      message: "New Employee's Last Name?"
     },
     {
       type: 'input',
       name: 'role_id',
-      message: 'What role ID would you like to use?'
+      message: 'What is the Role ID to use?'
     },
     {
       type: 'input',
       name: 'manager_id',
-      message: 'What manager ID would you like to use?'
+      message: 'What is the Manager ID for the new employee?'
     }
   ])
     .then(employee => {
       db.query('INSERT INTO employees SET ?', employee, err => {
         if (err) { console.log(err) }
-        console.log("Role added.")
+        console.log("Employee added.")
         catEmployeeSub()
       })
     })
 }
 
 // Remove employee
-function removeEmployee() {
-  console.log("-Removing Employee")
-  catEmployeeSub()
-}
+// function removeEmployee() {
+//   console.log(`
+//   Remove Employee:
+//   `)
+//   catEmployeeSub()
+// }
 
 // Update employee role
 function updateEmployeeRole() {
-  console.log("-Updating Role")
-  catEmployeeSub()
-}
-
-// Update employee department
-function updateEmployeeDepartment() {
-  console.log("-Updating Department")
-  catEmployeeSub()
+  console.log(`
+  Update Role:
+  `)
+  prompt([
+    {
+      type: 'input',
+      name: 'id',
+      message: 'What is the ID of the Employee to update?'
+    },
+    {
+      type: 'input',
+      name: 'role_id',
+      message: 'What Role ID do you want the employee to have?'
+    }
+  ])
+    .then(employee => {
+      db.query(`UPDATE employees SET ? WHERE id = ${employee.id}`, employee, err => {
+        if (err) { console.log(err) }
+        console.log('Role Updated.')
+        catEmployeeSub()
+      })
+    })
 }
 
 // Update employee manager
 function updateEmployeeManager() {
-  console.log("-Updating Manager")
-  catEmployeeSub()
+  console.log(`
+  Update Manager:
+  `)
+  prompt([
+    {
+      type: 'input',
+      name: 'id',
+      message: 'What is the ID of the Employee to update?'
+    },
+    {
+      type: 'input',
+      name: 'manager_id',
+      message: 'What is the ID of the Manager you want the employee to have?'
+    }
+  ])
+    .then(employee => {
+      db.query(`UPDATE employees SET ? WHERE id = ${employee.id}`, employee, err => {
+        if (err) { console.log(err) }
+        console.log('Manager Updated.')
+        catEmployeeSub()
+      })
+    })
 }
 
-
-
+// <----------------------------------------->
 
 // Role Sub-Category <------------->
 function catRolesSub() {
   console.log(`
-
      ______________________________________
     |                                      |
     |        Employee Role Sub-Menu        |
@@ -232,13 +271,17 @@ function catRolesSub() {
       message: "What would you like to do?",
       choices: [
         {
+          name: "Veiw all Roles",
+          value: "viewByRole1"
+        },
+        {
           name: "Add Employee Role",
           value: "addEmployeeRole"
         },
-        {
-          name: "Remove Employee Role",
-          value: "removeEmployeeRole"
-        },
+        // {
+        //   name: "Remove Employee Role",
+        //   value: "removeEmployeeRole"
+        // },
         {
           name: "<-Go Back<-",
           value: "goBack"
@@ -249,6 +292,9 @@ function catRolesSub() {
     .then(res => {
       let choice = res.choice
       switch (choice) {
+        case "viewByRole1":
+          viewByRole1()
+          break
         case "addEmployeeRole":
           addEmployeeRole()
           break
@@ -259,6 +305,20 @@ function catRolesSub() {
           appPrompts()
       }
     })
+}
+
+// List of Roles
+function viewByRole1() {
+  console.log(`
+  List of Roles:
+  `)
+  db.query('SELECT * FROM roles', (err, roles) => {
+    if (err) {
+      console.log(err)
+    }
+    console.table(roles)
+    catRolesSub()
+  })
 }
 
 // Add an employee role
@@ -293,18 +353,18 @@ function addEmployeeRole() {
 }
 
 // Remove an employee role
-function removeEmployeeRole() {
-  console.log("-Removing Role")
-  catRolesSub()
-}
+// function removeEmployeeRole() {
+//   console.log(`
+//   Remove Role:
+//   `)
+//   catRolesSub()
+// }
 
-
-
+// <----------------------------------------->
 
 // Department Sub-Category <------------->
-function catDeptartmentSub() {
+function catDepartmentSub() {
   console.log(`
-
      ______________________________________
     |                                      |
     |         Departments Sub-Menu         |
@@ -318,17 +378,21 @@ function catDeptartmentSub() {
       message: "What would you like to do?",
       choices: [
         {
+          name: "View Departments",
+          value: "viewByDepartment1"
+        },
+        {
           name: "Add Department",
           value: "addDepartment"
         },
-        {
-          name: "Remove Department",
-          value: "removeDepartment"
-        },
-        {
-          name: "View Department Budgets",
-          value: "viewDepartmentBudgets"
-        },
+        // {
+        //   name: "Remove Department",
+        //   value: "removeDepartment"
+        // },
+        // {
+        //   name: "View Department Budgets",
+        //   value: "viewDepartmentBudgets"
+        // },
         {
           name: "<-Go Back<-",
           value: "goBack"
@@ -339,6 +403,9 @@ function catDeptartmentSub() {
     .then(res => {
       let choice = res.choice
       switch (choice) {
+        case "viewByDepartment1":
+          viewByDepartment1()
+          break
         case "addDepartment":
           addDepartment()
           break
@@ -352,6 +419,20 @@ function catDeptartmentSub() {
           appPrompts()
       }
     })
+}
+
+// List of Departments
+function viewByDepartment1() {
+  console.log(`
+  List of Departments:
+  `)
+  db.query('SELECT * FROM departments', (err, departments) => {
+    if (err) {
+      console.log(err)
+    }
+    console.table(departments)
+    catDepartmentSub()
+  })
 }
 
 // Add department
@@ -376,28 +457,26 @@ function addDepartment() {
 }
 
 // Remove Department
-function removeDepartment() {
-  console.log(`
-  Remove Department:
-  `)
-  catDeptartmentSub()
-}
+// function removeDepartment() {
+//   console.log(`
+//   Remove Department:
+//   `)
+//   catDeptartmentSub()
+// }
 
 // View Department Budgets
-function viewDepartmentBudgets() {
-  console.log(`
-  Departments and Budgets:
-  `)
-  catDeptartmentSub()
-}
+// function viewDepartmentBudgets() {
+//   console.log(`
+//   Departments and Budgets:
+//   `)
+//   catDeptartmentSub()
+// }
 
-
-
+// <----------------------------------------->
 
 // Manager Sub-Category <------------->
 function catManagerSub() {
   console.log(`
-
      ______________________________________
     |                                      |
     |          Managers Sub-Menu           |
@@ -411,20 +490,16 @@ function catManagerSub() {
       message: "What would you like to do?",
       choices: [
         {
-          name: "View by Employee",
+          name: "View All Employees",
           value: "viewByEmployee"
         },
         {
-          name: "View by Department",
+          name: "View Departments",
           value: "viewByDepartment"
         },
         {
-          name: "View by Role",
+          name: "View All Roles",
           value: "viewByRole"
-        },
-        {
-          name: "View by Manager",
-          value: "viewByManager"
         },
         {
           name: "<-Go Back<-",
@@ -445,43 +520,63 @@ function catManagerSub() {
         case "viewByRole":
           viewByRole()
           break
-        case "viewByManager":
-          viewByManager()
-          break
         case "goBack":
           appPrompts()
       }
     })
 }
 
-// List by employee
+// List of employees
 function viewByEmployee() {
-  console.log("-List by Employee")
-  catManagerSub()
+  console.log(`
+  List of Employees:
+  `)
+  db.query('SELECT * FROM employees', (err, employees) => {
+    if (err) {
+      console.log(err)
+    }
+    console.table(employees)
+    catManagerSub()
+  })
 }
 
-// List by Department
+// List of Departments
 function viewByDepartment() {
-  console.log("-List by Department")
-  catManagerSub()
+  console.log(`
+  List of Departments:
+  `)
+  db.query('SELECT * FROM departments', (err, departments) => {
+    if (err) {
+      console.log(err)
+    }
+    console.table(departments)
+    catManagerSub()
+  })
 }
 
-// List by Role
+// List of Roles
 function viewByRole() {
-  console.log("-List by Role")
-  catManagerSub()
+  console.log(`
+  List of Roles:
+  `)
+  db.query('SELECT * FROM roles', (err, roles) => {
+    if (err) {
+      console.log(err)
+    }
+    console.table(roles)
+    catManagerSub()
+  })
 }
 
-// List by Manager
-function viewByManager() {
-  console.log("-List by Manager")
-  catManagerSub()
-}
+
+// <----------------------------------------->
 
 // Quit
 function quit() {
   process.exit()
 }
+
+// <----------------------------------------->
 
 // Kick it all off
 start()
