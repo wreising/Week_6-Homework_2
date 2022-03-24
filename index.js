@@ -55,8 +55,8 @@ function appPrompts() {
       ]
     }
   ])
-    .then(res => {
-      let choice = res.choice
+    .then(select => {
+      let choice = select.choice
       switch (choice) {
         case "categoryEmployees":
           catEmployeeSub()
@@ -120,8 +120,8 @@ function catEmployeeSub() {
       ]
     }
   ])
-    .then(res => {
-      let choice = res.choice
+    .then(select => {
+      let choice = select.choice
       switch (choice) {
         case "viewByEmployee1":
           viewByEmployee1()
@@ -129,9 +129,9 @@ function catEmployeeSub() {
         case "addEmployee":
           addEmployee()
           break
-        case "removeEmployee":
-          removeEmployee()
-          break
+        // case "removeEmployee":
+        //   removeEmployee()
+        //   break
         case "updateEmployeeRole":
           updateEmployeeRole()
           break
@@ -188,7 +188,9 @@ function addEmployee() {
     .then(employee => {
       db.query('INSERT INTO employees SET ?', employee, err => {
         if (err) { console.log(err) }
-        console.log("Employee added.")
+        console.log(`
+        The Employee has been added.
+        `)
         catEmployeeSub()
       })
     })
@@ -222,7 +224,9 @@ function updateEmployeeRole() {
     .then(employee => {
       db.query(`UPDATE employees SET ? WHERE id = ${employee.id}`, employee, err => {
         if (err) { console.log(err) }
-        console.log('Role Updated.')
+        console.log(`
+        The Emplyee's Role has been Updated.
+        `)
         catEmployeeSub()
       })
     })
@@ -248,7 +252,9 @@ function updateEmployeeManager() {
     .then(employee => {
       db.query(`UPDATE employees SET ? WHERE id = ${employee.id}`, employee, err => {
         if (err) { console.log(err) }
-        console.log('Manager Updated.')
+        console.log(`
+        The Employee's Manager has been Updated.
+        `)
         catEmployeeSub()
       })
     })
@@ -290,8 +296,8 @@ function catRolesSub() {
       ]
     }
   ])
-    .then(res => {
-      let choice = res.choice
+    .then(select => {
+      let choice = select.choice
       switch (choice) {
         case "viewByRole1":
           viewByRole1()
@@ -299,9 +305,9 @@ function catRolesSub() {
         case "addEmployeeRole":
           addEmployeeRole()
           break
-        case "removeEmployeeRole":
-          removeEmployeeRole()
-          break
+        // case "removeEmployeeRole":
+        //   removeEmployeeRole()
+        //   break
         case "goBack":
           appPrompts()
       }
@@ -347,7 +353,9 @@ function addEmployeeRole() {
     .then(role => {
       db.query('INSERT INTO roles SET ?', role, err => {
         if (err) { console.log(err) }
-        console.log("Role added.")
+        console.log(`
+        The Role has been added.
+        `)
         catRolesSub()
       })
     })
@@ -401,8 +409,8 @@ function catDepartmentSub() {
       ]
     }
   ])
-    .then(res => {
-      let choice = res.choice
+    .then(select => {
+      let choice = select.choice
       switch (choice) {
         case "viewByDepartment1":
           viewByDepartment1()
@@ -410,12 +418,12 @@ function catDepartmentSub() {
         case "addDepartment":
           addDepartment()
           break
-        case "removeDepartment":
-          removeDepartment()
-          break
-        case "viewDepartmentBudgets":
-          viewDepartmentBudgets()
-          break
+        // case "removeDepartment":
+        //   removeDepartment()
+        //   break
+        // case "viewDepartmentBudgets":
+        //   viewDepartmentBudgets()
+        //   break
         case "goBack":
           appPrompts()
       }
@@ -451,7 +459,9 @@ function addDepartment() {
     .then(department => {
       db.query('INSERT INTO departments SET ?', department, err => {
         if (err) { console.log(err) }
-        console.log("Department added.")
+        console.log(`
+        The Department has been added.
+        `)
         catDepartmentSub()
       })
     })
